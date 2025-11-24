@@ -1,10 +1,18 @@
+# Virtual environment
+.venv/
+env/
+venv/
+
+# Python cache
 __pycache__/
 *.pyc
-*.pyo
-*.pyd
-.env
-.venv/
-venv/
+
+# Jupyter Notebook checkpoints
 .ipynb_checkpoints/
-*.sqlite3
+
+# OS junk
 .DS_Store
+
+# Data (optional — remove if you want to commit data)
+*.csv
+data/
