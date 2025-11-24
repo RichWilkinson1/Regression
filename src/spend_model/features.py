@@ -12,14 +12,29 @@ from sklearn.preprocessing import OneHotEncoder
 from sklearn.compose import ColumnTransformer
 from sklearn.pipeline import Pipeline
 
-def add_derived_features(df: pd.DataFrame) -> pd.DataFrame:
+def engineer_features(df: pd.DataFrame) -> pd.DataFrame:
     """
-    Add engineered features to the raw dataframe.
-    Currently:
-    - car_brand: extracted from CarName (brand_model)
+    Add all engineered and derived features to the dataframe.
+    Includes:
+    - Brand + model extraction from CarName
+    - Performance + efficiency metrics:
+        * power_weight_ratio
+        * mpg_combined
+        * engine_efficiency
     """
     df = df.copy()
 
+    df = _extract_car_name_parts(df)
+    df = _add_numeric_engineering(df)
+
+    return df
+
+
+def _extract_car_name_parts(df: pd.DataFrame) -> pd.DataFrame:
+    """
+    Derive car_brand and car_model from CarName.
+    Example: 'toyota corolla' -> brand='toyota', model='corolla'
+    """
     df["car_brand"] = (
         df["CarName"]
         .str.split(" ")
@@ -27,7 +42,7 @@ def add_derived_features(df: pd.DataFrame) -> pd.DataFrame:
         .str.strip()
         .str.lower()
     )
-
+    
     df["car_model"] = (
         df["CarName"]
         .str.split(" ")
@@ -35,7 +50,19 @@ def add_derived_features(df: pd.DataFrame) -> pd.DataFrame:
         .str.strip()
         .str.lower()
     )
+    return df
 
+
+def _add_numeric_engineering(df: pd.DataFrame) -> pd.DataFrame:
+    """
+    Create numeric engineered features:
+    - power-to-weight (performance measure)
+    - combined MPG (fuel economy measure)
+    - engine efficiency per litre
+    """
+    df["power_weight_ratio"] = df["horsepower"] / df["curbweight"]
+    df["mpg_combined"] = (df["citympg"] + df["highwaympg"]) / 2
+    df["engine_efficiency"] = df["horsepower"] / df["enginesize"]
     return df
 
 
@@ -54,7 +81,11 @@ NUMERIC_FEATURES = [
     "horsepower",
     "peakrpm",
     "citympg",
-    "highwaympg"]
+    "highwaympg",
+    "power_weight_ratio",
+    "mpg_combined",
+    "engine_efficiency"
+]
 
 CATEGORICAL_FEATURES = [
     "CarName",
@@ -87,13 +118,13 @@ def build_features(df: pd.DataFrame) -> Tuple[pd.DataFrame, pd.Series]:
     """
     Prepare X and y for modelling. Drops missing values.
     """
-    df = add_derived_features(df)
+    df = engineer_features(df)
+    df = df.dropna()
 
     cols = NUMERIC_FEATURES + CATEGORICAL_FEATURES + [TARGET_COL]
-    df_clean = df[cols].dropna()
 
-    X = df_clean[NUMERIC_FEATURES + CATEGORICAL_FEATURES]
-    y = df_clean[TARGET_COL]
+    X = df[NUMERIC_FEATURES + CATEGORICAL_FEATURES]
+    y = df[TARGET_COL]
     return X, y
 
 def train_test_split_xy(X, y, test_size=0.2, random_state=42):
