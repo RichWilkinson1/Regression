@@ -121,8 +121,6 @@ def build_features(df: pd.DataFrame) -> Tuple[pd.DataFrame, pd.Series]:
     df = engineer_features(df)
     df = df.dropna()
 
-    cols = NUMERIC_FEATURES + CATEGORICAL_FEATURES + [TARGET_COL]
-
     X = df[NUMERIC_FEATURES + CATEGORICAL_FEATURES]
     y = df[TARGET_COL]
     return X, y
