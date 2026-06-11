@@ -2,95 +2,6 @@
 
 A simple project demonstrating structured Python modelling outside a notebook.
 
-###############################################
-
-1) Create the project folder
-
-On your machine (e.g., Desktop), create a folder named:
-
-customer_spend_model
-
-2) Open the folder in VS Code
-
-Open VS Code → File → Open Folder → select customer_spend_model.
-
-3) Open a terminal inside VS Code
-
-VS Code menu: View → Terminal.
-
-4) Create a virtual environment
-
-python -m venv .venv
-
-
-5) Activate the virtual environment
-
-PowerShell:
-
-.venv\Scripts\activate
-
-
-6) Install core Python libraries
-
-pip install pandas scikit-learn matplotlib
-
-
-7) Create a requirements.txt file
-
-After installing packages in a virtual environment, I freeze them into a requirements.txt file so the project can be recreated exactly on other machines or in production
-
-pip freeze > requirements.txt
-
-
-8) Create project folders
-In VS Code’s sidebar, create folders:
-
-src/
-notebooks/
-tests/
-
-
-9) Create your Python package folder
-Inside src/, create:
-
-spend_model/
-
-
-10) Create an initializer file
-Inside src/spend_model/, create:
-
-__init__.py
-
-# __init__.py makes a folder importable as a Python package.
-
-11) Create your reusable code modules
-Inside src/spend_model/, create files:
-
-data_load.py
-features.py
-train.py
-
-
-12) Create a notebook for exploration
-Inside notebooks/, create:
-
-01_exploration.ipynb
-
-
-13) Create a test file
-Inside tests/, create:
-
-test_features.py
-
-
-14) Create a README
-In the root folder, create:
-
-README.md
-
-
-Your structure should now look like:
-
 customer_spend_model/
 ├── .venv/
 ├── src/
@@ -161,13 +72,13 @@ RMSE (Root Mean Squared Error)
 
 ###############################################
 
-# 🏎️ Car Price Regression Workflow
+# Car Price Regression Workflow
 
 Below is the full process followed to build, engineer, train and evaluate multiple regression models on the car price dataset. Each step also shows which file or function handles that task.
 
 ---
 
-## 1) 📂 Load the Raw Data
+## 1) Load the Raw Data
 The dataset (e.g. `CarPrice_Assignment.csv`) is read into a pandas DataFrame.
 
 - Typically done in a notebook or a `data_load.py` helper.
@@ -177,7 +88,7 @@ The dataset (e.g. `CarPrice_Assignment.csv`) is read into a pandas DataFrame.
 
 ---
 
-## 2) 🔧 Feature Engineering
+## 2) Feature Engineering
 
 We enrich the raw `df` with new columns that make the predictive task easier.
 
@@ -204,7 +115,7 @@ Additional optional features (binning, interactions, log transforms) can also be
 
 ---
 
-## 3) 🎯 Select Features (X) and Target (y)
+## 3) Select Features (X) and Target (y)
 
 Handled inside **`build_features(df)`** in `features.py`:
 
@@ -222,7 +133,7 @@ Handled inside **`build_features(df)`** in `features.py`:
 
 ---
 
-## 4) ✂️ Train–Test Split
+## 4) Train–Test Split
 
 Done using `train_test_split_xy(X, y)` (wrapper for sklearn).
 
@@ -232,7 +143,7 @@ Done using `train_test_split_xy(X, y)` (wrapper for sklearn).
 
 ---
 
-## 5) 🧱 Preprocessing Pipeline
+## 5) Preprocessing Pipeline
 
 Defined in **`build_feature_pipeline()`** in `features.py`.
 
@@ -248,10 +159,10 @@ This pipeline:
 - Converts categories to numeric dummy variables
 - Ensures consistent transformation during training & prediction
 
-> 🔁 Every model uses this same preprocessing step before fitting.
+> Every model uses this same preprocessing step before fitting.
 
 ---
-## 6) 🤖 Model Pipelines
+## 6) Model Pipelines
 
 In the notebook or a `train.py`, models are wrapped like:
 
@@ -260,7 +171,7 @@ Pipeline([
     ("model", <RegressionModel>)
 ])
 
-## 7) 📊 Model Evaluation
+## 7) Model Evaluation
 
 A loop trains each pipeline and evaluates performance.
 Typically done via a helper such as `evaluate_model(...)`.
@@ -274,7 +185,7 @@ Predictions are stored for diagnostics:
 - Residual plots
 - Predicted vs actual charts
 
-🧠 These insights determine whether further feature engineering is needed.
+These insights determine whether further feature engineering is needed.
 
 ---
 
